@@ -3,14 +3,15 @@ import time
 import chromedriver_binary
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome import service
+#from selenium.webdriver.chrome import service
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 
 import get_code
 
 Student_ID = "Your Student ID"
 Password = "Your Password"
-
 
 def auto_login():
     #ログイン後ブラウザが自動で閉じないように起動時にdetachオプションをTrueにする
@@ -24,8 +25,11 @@ def auto_login():
     options.add_experimental_option("prefs", prefs)
 
     #LMSへの画面遷移
-    driver = webdriver.Chrome(options=options)
-    driver.get('URL')
+    # 自動で最新バージョンをダウンロードしてパス名を返してくれる。
+    driver_path = ChromeDriverManager().install()
+    driver = webdriver.Chrome(service=Service(executable_path=driver_path), options=options)
+    #driver = webdriver.Chrome(options=options)
+    driver.get('https://mdl.media.gunma-u.ac.jp/GU/index.php')
 
     login_button = driver.find_element(By.ID, "loginbutton")
     login_button.click()

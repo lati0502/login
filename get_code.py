@@ -2,6 +2,7 @@ from __future__ import print_function
 import os.path
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
+#from google.oauth2 import service_account
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 
@@ -21,6 +22,9 @@ tokenPath = "token.json"
 
 #credentials.jsonを設定
 credentialsPath = "credentials.json"
+
+#creds = service_account.Credentials.from_service_account_file(
+               #credentialsPath, scopes = SCOPES)
 
 
 #メール本文のデコード
@@ -42,9 +46,14 @@ def gmail_init():
        if creds and creds.expired and creds.refresh_token:
            creds.refresh(Request())
        else:
+
            flow = InstalledAppFlow.from_client_secrets_file(
                credentialsPath, SCOPES)
            creds = flow.run_local_server(port=0)
+           '''
+           creds = service_account.Credentials.from_service_account_file(
+               credentialsPath, scopes = SCOPES)
+           '''
        # Save the credentials for the next run
        with open(tokenPath, 'w') as token:
            token.write(creds.to_json())
@@ -112,7 +121,7 @@ def authentication_code():
     #gmail_display_label(service)
 
     #ラベル[code]内のメール取得
-    bodyArray = gmail_get_messages_body(service, "ラベルを入力")
+    bodyArray = gmail_get_messages_body(service, "Label_7328778821983217849")
 
     bodyList = re.split('<br>|\r\n', bodyArray[0])
 
@@ -124,3 +133,7 @@ def authentication_code():
     global mail_code
     mail_code = bodyList[3]
     #認証コード部分の取得
+
+    print(bodyList[3])
+
+#authentication_code()
